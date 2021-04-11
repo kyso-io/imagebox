@@ -5,14 +5,13 @@
 
 package com.ebremer.imagebox;
 
-import java.awt.image.BufferedImage;
+
 import java.io.EOFException;
-import java.io.File;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.Random;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -20,26 +19,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.imageio.ImageIO;
+
 import loci.common.ByteArrayHandle;
 import loci.common.IRandomAccess;
-import loci.common.Location;
-import loci.common.services.DependencyException;
-import loci.common.services.ServiceException;
-import loci.common.services.ServiceFactory;
-import loci.formats.CoreMetadata;
-import loci.formats.FormatException;
-import loci.formats.IFormatReader;
-import loci.formats.MissingLibraryException;
-import loci.formats.gui.AWTImageTools;
-import loci.formats.in.SVSReader;
-import loci.formats.meta.IMetadata;
-import loci.formats.meta.MetadataStore;
-import loci.formats.services.OMEXMLService;
-import loci.formats.services.OMEXMLServiceImpl;
-import ome.xml.meta.OMEXMLMetadataRoot;
-import ome.xml.model.Image;
-import ome.xml.model.primitives.PositiveInteger;
 
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.Response;
@@ -70,7 +52,8 @@ public class HTTPIRandomAccess4 implements IRandomAccess {
         tm = new TreeMap<>();
         this.url = url;
         if (httpClient == null) {
-            SslContextFactory sslContextFactory = new SslContextFactory();
+          SslContextFactory sslContextFactory = new SslContextFactory();
+
             httpClient = new HttpClient(sslContextFactory);
             httpClient.setFollowRedirects(true);   
             try {
@@ -490,71 +473,71 @@ public class HTTPIRandomAccess4 implements IRandomAccess {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-     public static void main(String[] args) throws MissingLibraryException, ServiceException, FormatException, IOException {
-        loci.common.DebugTools.setRootLevel("WARN");
-        //HTTPIRandomAccess4 bbb = new HTTPIRandomAccess4("http://www.ebremer.com/TCGA-02-0001-01C-01-BS1.0cc8ca55-d024-440c-a4f0-01cf5b3af861.svs");
-        //HTTPIRandomAccess4 bbb = new HTTPIRandomAccess4("http://vinculum.bmi.stonybrookmedicine.edu/TCGA-02-0001-01C-01-BS1.0cc8ca55-d024-440c-a4f0-01cf5b3af861.svs");
-        HTTPIRandomAccess4 bbb = new HTTPIRandomAccess4("https://s3.amazonaws.com/ebremeribox/TCGA-02-0001-01C-01-BS1.0cc8ca55-d024-440c-a4f0-01cf5b3af861.svs");
-        IFormatReader reader = new SVSReader();
-        reader.setOriginalMetadataPopulated(true);
-        OMEXMLService service;
-        //File in = new File("C:\\data\\TCGA-02-0001-01C-01-BS1.0cc8ca55-d024-440c-a4f0-01cf5b3af861.svs");
-        //NIOFileHandle fh = new NIOFileHandle(in,"r");
-        Location.mapFile("charm", bbb);
-        //Location.mapFile("local", fh);
-        try {
-            ServiceFactory factory = new ServiceFactory();
-            service = factory.getInstance(OMEXMLService.class);
-            reader.setMetadataStore(service.createOMEXMLMetadata(null, null));
-            reader.setId("charm");
-            //reader.setId("local");
-            System.out.println(reader.getSizeX()+" "+reader.getSizeY());
-            System.out.println("layers " +reader.getCoreMetadataList().size());
-            int ii = 0;
-            for (CoreMetadata x : reader.getCoreMetadataList()) {
-                System.out.println(ii+"  "+x.sizeX+","+x.sizeY);
-                ii++;
-            }
-            MetadataStore store = reader.getMetadataStore();
-            String xml = service.getOMEXML(service.asRetrieve(store));
-            IMetadata meta = service.createOMEXMLMetadata(xml);
-            OMEXMLMetadataRoot newRoot = (OMEXMLMetadataRoot) meta.getRoot();
-            meta.setRoot(newRoot);
-            OMEXMLMetadataRoot root = (OMEXMLMetadataRoot) store.getRoot();
-            Image EI = root.getImage(0);
-            newRoot.addImage(EI);
-            meta.setRoot(newRoot);
-            int height = 256;
-            int width = 256;
-            meta.setPixelsSizeX(new PositiveInteger(width), 0);
-            meta.setPixelsSizeY(new PositiveInteger(height), 0);
-            System.out.println("executing benchmarks...");
-            int tilex = 256;
-            int tiley = 256;
-            long starttime = System.nanoTime();
-            Random rand = new Random(); 
-            int numruns = 100;
-            for (int i=0; i<numruns; i++) {
-                int scale = rand.nextInt(5);
-                reader.setSeries(scale);
-                int offx = rand.nextInt(reader.getSizeX()-tilex);
-                int offy = rand.nextInt(reader.getSizeY()-tiley);
-                byte[] buf = reader.openBytes(0, offx, offy, tilex, tiley);
-                BufferedImage bb = AWTImageTools.makeImage(buf, false, meta, 0);
-                File outputfile = new File("neosaved.jpg");
-                ImageIO.write(bb, "jpg", outputfile);
-            }
-            long endtime = System.nanoTime();
-            long totaltime = (endtime - starttime)/1000000;
-            double time = ((double) totaltime)/numruns;  
-        } catch (DependencyException de) {
-            throw new MissingLibraryException(OMEXMLServiceImpl.NO_OME_XML_MSG, de);
-        } finally {
-            try {
-               // httpClient.stop();
-            } catch (Exception ex) {
-                Logger.getLogger(HTTPIRandomAccess4.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-     } 
+//     public static void main(String[] args) throws MissingLibraryException, ServiceException, FormatException, IOException {
+//        loci.common.DebugTools.setRootLevel("WARN");
+//        //HTTPIRandomAccess4 bbb = new HTTPIRandomAccess4("http://www.ebremer.com/TCGA-02-0001-01C-01-BS1.0cc8ca55-d024-440c-a4f0-01cf5b3af861.svs");
+//        //HTTPIRandomAccess4 bbb = new HTTPIRandomAccess4("http://vinculum.bmi.stonybrookmedicine.edu/TCGA-02-0001-01C-01-BS1.0cc8ca55-d024-440c-a4f0-01cf5b3af861.svs");
+//        HTTPIRandomAccess4 bbb = new HTTPIRandomAccess4("https://s3.amazonaws.com/ebremeribox/TCGA-02-0001-01C-01-BS1.0cc8ca55-d024-440c-a4f0-01cf5b3af861.svs");
+//        IFormatReader reader = new SVSReader();
+//        reader.setOriginalMetadataPopulated(true);
+//        OMEXMLService service;
+//        //File in = new File("C:\\data\\TCGA-02-0001-01C-01-BS1.0cc8ca55-d024-440c-a4f0-01cf5b3af861.svs");
+//        //NIOFileHandle fh = new NIOFileHandle(in,"r");
+//        Location.mapFile("charm", bbb);
+//        //Location.mapFile("local", fh);
+//        try {
+//            ServiceFactory factory = new ServiceFactory();
+//            service = factory.getInstance(OMEXMLService.class);
+//            reader.setMetadataStore(service.createOMEXMLMetadata(null, null));
+//            reader.setId("charm");
+//            //reader.setId("local");
+//            System.out.println(reader.getSizeX()+" "+reader.getSizeY());
+//            System.out.println("layers " +reader.getCoreMetadataList().size());
+//            int ii = 0;
+//            for (CoreMetadata x : reader.getCoreMetadataList()) {
+//                System.out.println(ii+"  "+x.sizeX+","+x.sizeY);
+//                ii++;
+//            }
+//            MetadataStore store = reader.getMetadataStore();
+//            String xml = service.getOMEXML(service.asRetrieve(store));
+//            IMetadata meta = service.createOMEXMLMetadata(xml);
+//            OMEXMLMetadataRoot newRoot = (OMEXMLMetadataRoot) meta.getRoot();
+//            meta.setRoot(newRoot);
+//            OMEXMLMetadataRoot root = (OMEXMLMetadataRoot) store.getRoot();
+//            Image EI = root.getImage(0);
+//            newRoot.addImage(EI);
+//            meta.setRoot(newRoot);
+//            int height = 256;
+//            int width = 256;
+//            meta.setPixelsSizeX(new PositiveInteger(width), 0);
+//            meta.setPixelsSizeY(new PositiveInteger(height), 0);
+//            System.out.println("executing benchmarks...");
+//            int tilex = 256;
+//            int tiley = 256;
+//            long starttime = System.nanoTime();
+//            Random rand = new Random();
+//            int numruns = 100;
+//            for (int i=0; i<numruns; i++) {
+//                int scale = rand.nextInt(5);
+//                reader.setSeries(scale);
+//                int offx = rand.nextInt(reader.getSizeX()-tilex);
+//                int offy = rand.nextInt(reader.getSizeY()-tiley);
+//                byte[] buf = reader.openBytes(0, offx, offy, tilex, tiley);
+//                BufferedImage bb = AWTImageTools.makeImage(buf, false, meta, 0);
+//                File outputfile = new File("neosaved.jpg");
+//                ImageIO.write(bb, "jpg", outputfile);
+//            }
+//            long endtime = System.nanoTime();
+//            long totaltime = (endtime - starttime)/1000000;
+//            double time = ((double) totaltime)/numruns;
+//        } catch (DependencyException de) {
+//            throw new MissingLibraryException(OMEXMLServiceImpl.NO_OME_XML_MSG, de);
+//        } finally {
+//            try {
+//               // httpClient.stop();
+//            } catch (Exception ex) {
+//                Logger.getLogger(HTTPIRandomAccess4.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
+//     }
 }

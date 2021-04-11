@@ -35,7 +35,7 @@ public class ImageReaderPool {
         }, Settings.ReaderPoolScanDelay, Settings.ReaderPoolScanRate);
     }
     
-    private synchronized NeoTiler GetReaderFromPool(String id) {
+    private synchronized NeoTiler GetReaderFromPool(String id, String format) {
         //System.out.println("GetReaderFromPool "+id);
         NeoTiler reader;
         if (pool.containsKey(id)) {
@@ -47,16 +47,16 @@ public class ImageReaderPool {
                 pool.remove(id);
             }
         } else {
-            reader = new NeoTiler(id);
+            reader = new NeoTiler(id, format);
         }
         return reader;
     }
     
-    public NeoTiler GetReader(String id) {
+    public NeoTiler GetReader(String id, String format) {
         //System.out.println("GetReader "+id);
-        NeoTiler reader = GetReaderFromPool(id);
+        NeoTiler reader = GetReaderFromPool(id, format);
         if (reader==null) {
-            reader = new NeoTiler(id);
+            reader = new NeoTiler(id, null);
         }
         return reader;
     }

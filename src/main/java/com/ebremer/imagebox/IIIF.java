@@ -34,6 +34,7 @@ public class IIIF {
     public ImageFormat imageformat;
 
     IIIF(String url) throws URISyntaxException {
+//        System.out.println("1. url "+ url);
         matcher = PATTERN1.matcher(url);
         if (matcher.find()) {
             tilerequest = true;

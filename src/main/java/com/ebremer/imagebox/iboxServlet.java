@@ -19,6 +19,7 @@ import javax.imageio.ImageWriter;
 import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
 import javax.imageio.stream.ImageOutputStream;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author erich
  */
+@WebServlet
 public class iboxServlet extends HttpServlet {
     /**
 	 * 
@@ -37,28 +39,46 @@ public class iboxServlet extends HttpServlet {
     
     @Override
     protected void doGet( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException {
+ //       System.out.println("1. Entering....App");
+
         String iiif = request.getParameter("iiif");
-//        System.out.println(iiif);
+        String format = request.getParameter("format");
+ //      System.out.println("2.request param iiif is: "+iiif);
         if (iiif!=null) {
             IIIF i = null;
-            try {
-                i = new IIIF(iiif);
-            } catch (URISyntaxException ex) {
-                Logger.getLogger(iboxServlet.class.getName()).log(Level.SEVERE, null, ex);
+          try {
+            Boolean whiteListed= Utils.isWhiteListed(iiif);
+            if(!whiteListed)
+               {
+                   response.setContentType("text/html");
+                   PrintWriter out = response.getWriter();
+                   out.println("WhiteListed check done." +
+                           "\n Please check in the parameter 'iiif', URL to the slide should be whitelisted.");
+
+                   Logger.getLogger(iboxServlet.class.getName()).log(Level.INFO,"WhiteListed check done." +
+                           "\n Please check in the parameter 'iiif', URL to the slide should be whitelisted.");
+                }
+             } catch (Exception ex) {
+                Logger.getLogger(iboxServlet.class.getName()).log(Level.SEVERE, ex.getMessage());
             }
+          try{
+              i = new IIIF(iiif);
+             }catch (URISyntaxException ex) {
+                Logger.getLogger(iboxServlet.class.getName()).log(Level.SEVERE, ex.getMessage());
+             }
             NeoTiler nt = null;
             String target = null;
             if (i.uri.getScheme()==null) {
                 File image = Paths.get(fpath+"/"+i.uri.getPath()).toFile();
                 target = image.getPath();
-                nt = pool.GetReader(target);                
+                nt = pool.GetReader(target, format);                
             } else if (i.uri.getScheme().startsWith("http")) {
                 target = i.uri.toString();
-                nt = pool.GetReader(target);                
+                nt = pool.GetReader(target, format);                
             } else if (i.uri.getScheme().startsWith("file")) {
                 File image = FileSystems.getDefault().provider().getPath(i.uri).toAbsolutePath().toFile();
                 target = image.getPath();
-                nt = pool.GetReader(target);
+                nt = pool.GetReader(target, format);
             } else {
                 System.out.println("I'm so confused as what I am looking at....");
             }

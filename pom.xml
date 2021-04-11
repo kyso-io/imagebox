@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.ebremer</groupId>
-    <artifactId>ImageBox</artifactId>
+    <artifactId>gcr-imagebox</artifactId>
     <version>2.0.0</version>
     <packaging>jar</packaging>
     <properties>
@@ -11,23 +11,6 @@
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
     <dependencies>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.6</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.jena</groupId>
-            <artifactId>apache-jena-libs</artifactId>
-            <type>pom</type>
-            <version>3.16.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.jena</groupId>
-            <artifactId>jena-arq</artifactId>
-            <version>3.16.0</version>
-            <type>jar</type>
-        </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
@@ -44,6 +27,12 @@
             <artifactId>loci_tools</artifactId>
             <version>6.5.1</version>
             <scope>compile</scope>
+            <exclusions>
+            <exclusion>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+            </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.glassfish</groupId>
@@ -53,14 +42,27 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-servlet</artifactId>
-            <version>9.4.32.v20200930</version>
+            <version>9.4.36.v20210114</version>
             <type>jar</type>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-client</artifactId>
-            <version>9.4.32.v20200930</version>
+            <version>9.4.36.v20210114</version>
             <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <!-- Embedded Jetty server  -->
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-server</artifactId>
+            <version>9.4.36.v20210114</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-util</artifactId>
+            <version>9.4.36.v20210114</version>
         </dependency>
     </dependencies>
     <build>
@@ -71,7 +73,7 @@
                         <include>**/*.js</include>
                         <include>**/*.html</include>
                     </includes>
-                </resource>             
+                </resource>
             </resources>
         <plugins>
             <plugin>
@@ -122,6 +124,30 @@
                     </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.ebremer.imagebox.W3Cmf</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>2.0.0</version>
+                <configuration>
+                    <to>
+                        <image>gcr.io/dl-test-tma/imageboxv2</image>
+                    </to>
+
+                </configuration>
             </plugin>
         </plugins>
     </build>
