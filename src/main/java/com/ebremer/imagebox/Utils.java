@@ -19,8 +19,7 @@ public class Utils {
         
         else {
 	        List<String> whiteListedDomainsList = Arrays.asList(whiteListedUrls.split(","));
-	         
-	        System.out.println("containerPort " + System.getenv("containerPort"));
+
 	        for (String whiteURL :whiteListedDomainsList ){
 	         //   System.out.println("whiteURL- " + whiteURL);
 	            if (iiif.trim().startsWith(whiteURL.trim())){

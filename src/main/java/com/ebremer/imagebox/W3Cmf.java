@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author erich
  */
-    public class W3Cmf {
+public class W3Cmf {
     final Server server = new Server();
     String webfiles = Settings.webfiles;
     
@@ -42,8 +42,8 @@ import org.slf4j.LoggerFactory;
     
     private void startup() throws Exception {
         ServerConnector connector = new ServerConnector(server);
-        connector.setPort(Settings.port);
-        server.addConnector(connector);    
+        connector.setPort(Settings.getPort());
+        server.addConnector(connector);    	
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
         server.setHandler(context);
