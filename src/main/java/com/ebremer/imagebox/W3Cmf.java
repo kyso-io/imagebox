@@ -58,12 +58,12 @@ public class W3Cmf {
         holderHome.setInitParameter("pathInfoOnly","true");
         context.addServlet(holderHome,"/*");
         server.start();
-        server.join();  
+        server.join();
     }
 
     public static void main(String[] args) throws Exception {
-        ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger)(Logger)LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-        root.setLevel(Level.OFF);
+        // ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger)(Logger)LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+        // root.setLevel(Level.OFF);
         W3Cmf engine = new W3Cmf();
     }
 }
