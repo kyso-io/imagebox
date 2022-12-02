@@ -1,0 +1,6 @@
+./.[a-z]*
+Dockerfile
+LICENSE
+README.md
+./*.png
+./target

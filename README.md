@@ -1,4 +1,8 @@
-ImageBox Server 2.0
+## IMPORTANT NOTE
+
+This branch has been modified for Kyso!
+
+# ImageBox Server 2.0
 
 ImageBox is a java-based image tiling server that implements (partial) the IIIF (https://iiif.io/) interface.  It is built on the OME Bioformats image library (https://github.com/ome/bioformats) which enables it to provide tiles for a variety of image formats.
 
