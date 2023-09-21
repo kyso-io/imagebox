@@ -1,9 +1,9 @@
 # Args
-ARG MAVEN_VERSION=fixme
-ARG JRE_VERSION=fixme
+ARG MAVEN_VERSION=3.6.3-jdk-11
+ARG JRE_VERSION=11.0.17_8-jre-alpine
 
 ## Stage 1 : build package
-FROM registry.kyso.io/docker/maven:${MAVEN_VERSION} AS builder
+FROM maven:${MAVEN_VERSION} AS builder
 LABEL maintainer="Sergio Talens-Oliag <sto@kyso.io>"
 WORKDIR /build
 COPY . ./
